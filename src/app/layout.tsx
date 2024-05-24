@@ -22,7 +22,7 @@ export default async function RootLayout({
 		<html lang="en" className={`${GeistSans.variable}`}>
 			<body>
 				{session && (
-					<Profile data={session.user} />
+					<Profile session={session} />
 				)}
 				<TRPCReactProvider>{children}</TRPCReactProvider>
 			</body>
