@@ -3,13 +3,16 @@
 import * as React from "react";
 
 import Blocks from "./blocks";
+import { useWindowSize } from "../_hooks/useWindowSize";
 
 export default function App() {
-	const [totalBlocks, setTotalBlocks] = React.useState(22);
-	const [rowSize, setRowSize] = React.useState(7);
-	const [multiWidth, setMultiWidth] = React.useState(false);
+	const [totalBlocks] = React.useState(22);
+	const [multiWidth] = React.useState(false);
+	const size = useWindowSize();
+	const width = size[0] as number;
+	const rowSize = Math.floor(width / 132);
 	return (
-		<div className="App w-full m-auto">
+		<div className="w-full m-auto">
 			<Blocks
 				key={`${rowSize}-${multiWidth}-${totalBlocks}`}
 				rowSize={rowSize}

@@ -1,6 +1,9 @@
+"use client";
+
 import * as React from "react";
 import styled from "styled-components";
-import { Stack, Text } from "~/app/utils/styled";
+import { Stack } from "~/app/utils/styled";
+
 
 
 const Block = styled(Stack)`
@@ -9,29 +12,24 @@ const Block = styled(Stack)`
   margin-right: 8px;
 `;
 
-const StyledText = styled(Text)`
-  color: white;
-  font-weight: 600;
-  font-size: 24px;
-`;
-
 interface IProps {
-	name: string;
+	index: number;
 	style: React.CSSProperties;
 	onMouseDown: (event: React.MouseEvent) => void;
 }
 
-const QucikPick = ({ name, ...props }: IProps) => {
+const array = ["mp4", "ttf", "psd", "docx"];
+
+const AppBlock = ({ index, ...props }: IProps) => {
+
+	const randomElement = array[index % array.length] as DefaultExtensionType;
 	return (
 		<Block
-			className="app-block"
+			className="app-block items-center justify-center"
 			{...props}
-			alignItems="center"
-			justifyContent="center"
 		>
-			<StyledText className="ellipsis">{name}</StyledText>
 		</Block>
 	);
 };
 
-export default QucikPick;
+export default AppBlock;

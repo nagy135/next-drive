@@ -74,12 +74,3 @@
       @apply bg-background text-foreground;
     }
   }
-
-.App {
-  font-family: sans-serif;
-}
-
-input {
-  width: 40px;
-  margin-right: 16px;
-}

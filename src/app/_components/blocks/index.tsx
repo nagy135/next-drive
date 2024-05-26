@@ -216,7 +216,7 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks }: IProps) => {
 	}, [store, clearStore, setSprings, rowSize]);
 
 	return (
-		<Stack style={{ height: 400 }} fullHeight flexDirection="column">
+		<Stack style={{ height: 400 }} className="h-full flex-col">
 			<AppWrapper ref={wrapperRef}>
 				{springs.map((props, i) => {
 					// @ts-ignore
@@ -242,7 +242,7 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks }: IProps) => {
 									background: appCurrent.background
 								}}
 								// @ts-ignore
-								name={appCurrent.name}
+								index={i}
 							/>
 						</AnimatedWrapper>
 					);
