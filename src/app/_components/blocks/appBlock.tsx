@@ -4,6 +4,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { Stack } from "~/app/utils/styled";
 
+import { DefaultExtensionType, FileIcon, defaultStyles } from "react-file-icon";
 
 
 const Block = styled(Stack)`
@@ -28,6 +29,9 @@ const AppBlock = ({ index, ...props }: IProps) => {
 			className="app-block items-center justify-center"
 			{...props}
 		>
+			<div className="p-3 bg-white shadow-md rounded-md flex items-center justify-center">
+				<FileIcon extension={randomElement} {...defaultStyles[randomElement]} />
+			</div>
 		</Block>
 	);
 };
