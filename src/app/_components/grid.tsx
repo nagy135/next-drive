@@ -1,36 +1,21 @@
 "use client";
 
-import Draggable from 'react-draggable';
+import * as React from "react";
 
-const COLS = 10;
-const ROWS = 10;
-const CELLSIZE = 64;
+import Blocks from "./blocks";
 
-function Item({ key, label, index }: { key: number; label: string; index: number }) {
-	const row = Math.floor(index / COLS) * CELLSIZE;
-	const col = index % COLS * CELLSIZE;
-	return <Draggable
-		axis="both"
-		handle=".handle"
-		defaultPosition={{ x: 0, y: 0 }}
-		grid={[64, 64]}
-		scale={1}
-		bounds={"parent"}
-	// onStart={this.handleStart}
-	// onDrag={this.handleDrag}
-	// onStop={this.handleStop}
-	>
-		<div className="bg-red-300 w-[64px] h-[64px] pointer handle">
-			{label}
-		</div>
-	</Draggable>
-}
-
-export function Grid() {
-	const items = Array.from({ length: 10 }, (_, i) => i);
+export default function App() {
+	const [totalBlocks, setTotalBlocks] = React.useState(22);
+	const [rowSize, setRowSize] = React.useState(7);
+	const [multiWidth, setMultiWidth] = React.useState(false);
 	return (
-		<div className="w-full h-128 relative text-black grid grid-cols-8">
-			{items.map((item) => <Item key={item} index={item} label={item.toString()} />)}
+		<div className="App w-full m-auto">
+			<Blocks
+				key={`${rowSize}-${multiWidth}-${totalBlocks}`}
+				rowSize={rowSize}
+				multiWidth={multiWidth}
+				totalBlocks={totalBlocks}
+			/>
 		</div>
 	);
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";
-import { Grid } from "./_components/grid";
+import Grid from "./_components/grid";
 
 export default async function Home() {
 	const session = await getServerAuthSession();
