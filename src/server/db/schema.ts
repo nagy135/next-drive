@@ -19,11 +19,14 @@ import { type AdapterAccount } from "next-auth/adapters";
  */
 export const createTable = pgTableCreator((name) => `next-drive_${name}`);
 
-export const posts = createTable(
-	"post",
+export const files = createTable(
+	"file",
 	{
 		id: serial("id").primaryKey(),
 		name: varchar("name", { length: 256 }),
+		path: varchar("path", { length: 256 }),
+		extension: varchar("extension", { length: 256 }),
+
 		createdById: varchar("createdById", { length: 255 })
 			.notNull()
 			.references(() => users.id),
