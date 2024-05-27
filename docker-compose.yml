@@ -17,6 +17,7 @@ services:
       - ./.:/app
     ports:
       - "3000:3000"
+      - "4983:4983"
     # env_file: ./env/.env.app
     stdin_open: true
 
