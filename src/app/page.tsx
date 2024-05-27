@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";
 import Grid from "./_components/grid";
+import FileUploader from "./_components/file-uploader";
 
 export default async function Home() {
 	const session = await getServerAuthSession();
@@ -16,6 +17,7 @@ export default async function Home() {
 				>
 					{"Sign in"}
 				</Link>}
+				<FileUploader />
 				<Grid />
 			</div>
 		</main>

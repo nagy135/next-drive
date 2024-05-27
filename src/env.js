@@ -33,6 +33,10 @@ export const env = createEnv({
 	 */
 	client: {
 		// NEXT_PUBLIC_CLIENTVAR: z.string(),
+		NEXT_PUBLIC_S3_BUCKET: z.string(),
+		NEXT_PUBLIC_S3_REGION: z.string(),
+		NEXT_PUBLIC_S3_ACCESS_KEY_ID: z.string(),
+		NEXT_PUBLIC_S3_SECRET_ACCESS_KEY: z.string(),
 	},
 
 	/**
@@ -46,6 +50,10 @@ export const env = createEnv({
 		NEXTAUTH_URL: process.env.NEXTAUTH_URL,
 		GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
 		GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+		NEXT_PUBLIC_S3_BUCKET: process.env.NEXT_PUBLIC_S3_BUCKET,
+		NEXT_PUBLIC_S3_REGION: process.env.NEXT_PUBLIC_S3_REGION,
+		NEXT_PUBLIC_S3_ACCESS_KEY_ID: process.env.NEXT_PUBLIC_S3_ACCESS_KEY_ID,
+		NEXT_PUBLIC_S3_SECRET_ACCESS_KEY: process.env.NEXT_PUBLIC_S3_SECRET_ACCESS_KEY,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
