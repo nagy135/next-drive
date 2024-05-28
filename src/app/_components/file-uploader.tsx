@@ -39,38 +39,6 @@ export default function FileUploader() {
 
 	const onDragOver = (ev: any) => ev.preventDefault();
 
-	const fileDownload = (filename: string): void => {
-
-		const s3 = getS3Client();
-		try {
-			const params = {
-				Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? "",
-				Key: filename
-			};
-
-			s3.getObject(params, (_err, data) => {
-				if (data.Body) {
-					const blob = new Blob([data.Body as BlobPart], { type: data.ContentType });
-
-					const url = URL.createObjectURL(blob);
-					const a = document.createElement('a');
-					a.href = url;
-					a.download = filename;
-					document.body.appendChild(a);
-					a.click();
-
-					// Cleanup
-					URL.revokeObjectURL(url);
-					document.body.removeChild(a);
-				} else {
-					console.error('No data.Body in the response');
-				}
-			});
-
-		} catch (error) {
-			console.error('Error downloading the file', error);
-		}
-	}
 
 	const uploadFiles = useCallback(() => {
 
