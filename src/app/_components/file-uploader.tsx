@@ -1,15 +1,24 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
 import { getS3Client } from "~/lib/s3";
+import { api } from "~/trpc/react";
 
 export default function FileUploader() {
+	const router = useRouter();
 	const [files, setFiles] = useState<File[]>([]);
 	const [uploadProgress, setUploadProgress] = useState(0);
+	const createFile = api.file.create.useMutation({
+		onSuccess: () => {
+			setFiles([]);
+			router.refresh();
+		}
+	});
 
 	const onDropHandler = (ev: any) => {
 		ev.preventDefault();
@@ -88,6 +97,9 @@ export default function FileUploader() {
 			upload.then((data) => {
 				console.log("[INFO] uploaded successfuly: ", file);
 				console.log("================\n", "data: ", data, "\n================");
+				createFile.mutate({
+					name: file.name,
+				})
 			});
 		}
 	}, [files, setUploadProgress]);
