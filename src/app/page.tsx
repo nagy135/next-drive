@@ -2,9 +2,11 @@ import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";
 import Grid from "./_components/grid";
 import FileUploader from "./_components/file-uploader";
+import { api } from "~/trpc/server";
 
 export default async function Home() {
 	const session = await getServerAuthSession();
+	const files = await api.file.getAll();
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center ">
 			<div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
@@ -18,7 +20,7 @@ export default async function Home() {
 					{"Sign in"}
 				</Link>}
 				<FileUploader />
-				<Grid />
+				<Grid filenames={files.map(e => e.name)} />
 			</div>
 		</main>
 	);

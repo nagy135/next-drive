@@ -14,23 +14,21 @@ const Block = styled(Stack)`
 `;
 
 interface IProps {
-	index: number;
 	style: React.CSSProperties;
+	filename: string;
 	onMouseDown: (event: React.MouseEvent) => void;
 }
 
-const array = ["mp4", "ttf", "psd", "docx"];
+const AppBlock = ({ filename, ...props }: IProps) => {
+	const extension = (filename.split('.').at(-1) ?? 'txt') as DefaultExtensionType;
 
-const AppBlock = ({ index, ...props }: IProps) => {
-
-	const randomElement = array[index % array.length] as DefaultExtensionType;
 	return (
 		<Block
 			className="app-block items-center justify-center"
 			{...props}
 		>
 			<div className="p-3 bg-white shadow-md rounded-md flex items-center justify-center">
-				<FileIcon extension={randomElement} {...defaultStyles[randomElement]} />
+				<FileIcon extension={extension} {...defaultStyles[extension]} />
 			</div>
 		</Block>
 	);

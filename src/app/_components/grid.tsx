@@ -5,13 +5,16 @@ import * as React from "react";
 import Blocks from "./blocks";
 import { useWindowSize } from "../_hooks/useWindowSize";
 
-export default function App() {
+type GridProps = {
+	filenames: string[];
+};
+
+export default function Grid({ filenames }: GridProps) {
 	const [totalBlocks, setTotalBlocks] = React.useState(0);
-	const [multiWidth] = React.useState(false);
 	const size = useWindowSize();
 
 	React.useLayoutEffect(() => {
-		setTotalBlocks(20);
+		setTotalBlocks(filenames.length);
 	}, []);
 
 	const width = size[0] as number;
@@ -20,10 +23,11 @@ export default function App() {
 	return (
 		<div className="w-full m-auto">
 			<Blocks
-				key={`${rowSize}-${multiWidth}-${totalBlocks}`}
+				key={`${rowSize}-${totalBlocks}`}
 				rowSize={rowSize}
-				multiWidth={multiWidth}
+				multiWidth={false}
 				totalBlocks={totalBlocks}
+				filenames={filenames}
 			/>
 		</div>
 	);

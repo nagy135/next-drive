@@ -23,7 +23,7 @@ export const files = createTable(
 	"file",
 	{
 		id: serial("id").primaryKey(),
-		name: varchar("name", { length: 256 }),
+		name: varchar("name", { length: 256 }).notNull(),
 
 		createdById: varchar("createdById", { length: 255 })
 			.notNull()

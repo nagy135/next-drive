@@ -44,17 +44,20 @@ interface IProps {
 	rowSize: number;
 	multiWidth: boolean;
 	totalBlocks: number;
+	filenames: string[];
 }
 
-const Blocks = ({ rowSize, multiWidth, totalBlocks }: IProps) => {
+const Blocks = ({ rowSize, multiWidth, totalBlocks, filenames }: IProps) => {
 	const getApps = React.useCallback(() => {
 		// @ts-ignore
-		const appsZ: IAppList[] = new Array(totalBlocks).fill(1).map((a, i) => ({
-			width: Math.random() > 0.5 ? (multiWidth ? 2 : 1) : 1,
-			position: -1,
-			name: i + "",
-			background: getColor(i)
-		}));
+		const appsZ: IAppList[] = totalBlocks > 0 ?
+			filenames.map((name, i) => ({
+				name,
+				width: Math.random() > 0.5 ? (multiWidth ? 2 : 1) : 1,
+				position: -1,
+				background: getColor(i)
+			}))
+			: [];
 
 		return getIndex(appsZ, rowSize);
 	}, [rowSize, multiWidth, totalBlocks]);
@@ -243,6 +246,7 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks }: IProps) => {
 								}}
 								// @ts-ignore
 								index={i}
+								filename={appCurrent.name}
 							/>
 						</AnimatedWrapper>
 					);
