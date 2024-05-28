@@ -26,6 +26,7 @@ const AppWrapper = styled(Stack)`
   flex-grow: 2;
   overflow: auto;
   flex-wrap: wrap;
+	padding-top: 3em;
   position: relative;
 `;
 

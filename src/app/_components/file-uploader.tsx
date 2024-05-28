@@ -136,7 +136,6 @@ export default function FileUploader() {
 					}}
 				></input>
 			</div>
-			<Button onClick={() => fileDownload("credit_card.jpeg")} className="mt-3">down</Button>
 		</div>
 	);
 };
