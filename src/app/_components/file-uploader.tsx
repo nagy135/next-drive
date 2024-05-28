@@ -1,12 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { S3, config } from "aws-sdk";
-import { saveAs } from 'file-saver';
 
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
+import { getS3Client } from "~/lib/s3";
 
 export default function FileUploader() {
 	const [files, setFiles] = useState<File[]>([]);
@@ -31,31 +30,51 @@ export default function FileUploader() {
 
 	const onDragOver = (ev: any) => ev.preventDefault();
 
+	const fileDownload = (filename: string): void => {
+
+		const s3 = getS3Client();
+		try {
+			const params = {
+				Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? "",
+				Key: filename
+			};
+
+			s3.getObject(params, (_err, data) => {
+				if (data.Body) {
+					const blob = new Blob([data.Body as BlobPart], { type: data.ContentType });
+
+					const url = URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = filename;
+					document.body.appendChild(a);
+					a.click();
+
+					// Cleanup
+					URL.revokeObjectURL(url);
+					document.body.removeChild(a);
+				} else {
+					console.error('No data.Body in the response');
+				}
+			});
+
+		} catch (error) {
+			console.error('Error downloading the file', error);
+		}
+	}
+
 	const uploadFiles = useCallback(() => {
 
-		// S3 Credentials
-		config.update({
-			accessKeyId: process.env.NEXT_PUBLIC_S3_ACCESS_KEY_ID,
-			secretAccessKey: process.env.NEXT_PUBLIC_S3_SECRET_ACCESS_KEY,
-		});
-		const s3 = new S3({
-			params: { Bucket: process.env.NEXT_PUBLIC_S3_BUCKET },
-			region: process.env.NEXT_PUBLIC_S3_REGION,
-			signatureVersion: "v4",
-		});
-
-		// Files Parameters
+		const s3 = getS3Client();
 
 		for (const file of files) {
+			console.log("[INFO] uploading: ", file);
 			const params = {
 				Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? "",
 				Key: file.name,
 				Body: file,
 				ContentType: file.type,
 			};
-
-			console.log("================\n", "file: ", file, "\n================");
-			// Uploading file to s3
 
 			var upload = s3
 				.putObject(params)
@@ -67,16 +86,8 @@ export default function FileUploader() {
 				.promise();
 
 			upload.then((data) => {
+				console.log("[INFO] uploaded successfuly: ", file);
 				console.log("================\n", "data: ", data, "\n================");
-				alert("File uploaded successfully.");
-
-				s3.listObjects({ Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? "" }, (err, data) => {
-					if (err) {
-						console.log(err, err.stack);
-					} else {
-						console.log(data);
-					}
-				});
 			});
 		}
 	}, [files, setUploadProgress]);
@@ -113,49 +124,7 @@ export default function FileUploader() {
 					}}
 				></input>
 			</div>
-			<Button onClick={() => {
-				// S3 Credentials
-				// TODO: remove this
-				config.update({
-					accessKeyId: process.env.NEXT_PUBLIC_S3_ACCESS_KEY_ID,
-					secretAccessKey: process.env.NEXT_PUBLIC_S3_SECRET_ACCESS_KEY,
-				});
-				const s3 = new S3({
-					params: { Bucket: process.env.NEXT_PUBLIC_S3_BUCKET },
-					region: process.env.NEXT_PUBLIC_S3_REGION,
-					signatureVersion: "v4",
-				});
-				try {
-					const params = {
-						Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? "",
-						Key: "credit_card.jpeg"
-					};
-
-					s3.getObject(params, (_err, data) => {
-						if (data.Body) {
-							console.log("================\n", "data: ", data, "\n================");
-							const blob = new Blob([data.Body as BlobPart], { type: data.ContentType });
-
-							const url = URL.createObjectURL(blob);
-							// Create an anchor element and trigger a download
-							const a = document.createElement('a');
-							a.href = url;
-							a.download = "image.jpeg";
-							document.body.appendChild(a);
-							a.click();
-
-							// Cleanup
-							URL.revokeObjectURL(url);
-							document.body.removeChild(a);
-						} else {
-							console.error('No data.Body in the response');
-						}
-					});
-
-				} catch (error) {
-					console.error('Error downloading the file', error);
-				}
-			}} className="mt-3">down</Button>
+			<Button onClick={() => fileDownload("credit_card.jpeg")} className="mt-3">down</Button>
 		</div>
 	);
 };
