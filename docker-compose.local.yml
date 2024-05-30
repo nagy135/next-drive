@@ -5,7 +5,7 @@ services:
     volumes:
       - next-drive-postgres:/var/lib/postgresql/data
     ports:
-      - "127.0.0.1:15432:5432"
+      - "127.0.0.1:5432:5432"
     command: ["postgres", "-c", "log_statement=all"]
     env_file: ./.env.postgres
 
@@ -16,8 +16,8 @@ services:
     volumes:
       - ./.:/app
     ports:
-      - "13001:3000"
-      - "14983:4983"
+      - "3000:3000"
+      - "4983:4983"
     # env_file: ./env/.env.app
     stdin_open: true
 
