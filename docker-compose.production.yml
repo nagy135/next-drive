@@ -13,8 +13,6 @@ services:
     build:
       dockerfile: ./Dockerfile.production
       context: ./.
-    volumes:
-      - ./.:/app
     ports:
       - "13001:3000"
       - "14983:4983"
