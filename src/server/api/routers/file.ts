@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import {
@@ -20,6 +21,14 @@ export const fileRouter = createTRPCRouter({
 	getAll: publicProcedure.query(({ ctx }) => {
 		return ctx.db.query.files.findMany();
 	}),
+
+	getByUserId: publicProcedure
+		.input(z.string())
+		.query(({ ctx, input }) => {
+			return ctx.db.query.files.findMany({
+				where: eq(files.createdById, input)
+			});
+		}),
 
 	getSecretMessage: protectedProcedure.query(() => {
 		return "you can now see this secret message!";

@@ -6,20 +6,26 @@ import { api } from "~/trpc/server";
 
 export default async function Home() {
 	const session = await getServerAuthSession();
-	const files = await api.file.getAll();
+	const userId = session?.user.id;
+	const files = userId === undefined
+		? await api.file.getAll()
+		: await api.file.getByUserId(userId);
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center ">
 			<div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
 				<h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
 					Next-drive
 				</h1>
-				{!session && <Link
-					href={"/api/auth/signin"}
-					className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-				>
-					{"Sign in"}
-				</Link>}
-				<FileUploader />
+				{!session && <>
+					<Link
+						href={"/api/auth/signin"}
+						className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+					>
+						{"Sign in"}
+					</Link>
+					<FileUploader />
+				</>}
+				<h1 className="text-xl font-bold">{!session ? "Files of every user" : "Your files"}</h1>
 				<Grid filenames={files.map(e => e.name)} />
 			</div>
 		</main>
