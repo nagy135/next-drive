@@ -7,6 +7,7 @@ import { Stack } from "~/app/utils/styled";
 import { DefaultExtensionType, FileIcon, defaultStyles } from "react-file-icon";
 import { getS3Client } from "~/lib/s3";
 import { SelectFile } from "~/server/db/schema";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
 
 
 const Block = styled(Stack)`
@@ -75,9 +76,16 @@ const AppBlock = ({ file, ...props }: IProps) => {
 				<div className="relative w-[50px]">
 					<FileIcon extension={extension} {...defaultStyles[extension]} />
 				</div>
-				<span className="text-xs">
-					{file.name}
-				</span>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<span className="text-xs">
+							{file.name}
+						</span>
+					</TooltipTrigger>
+					<TooltipContent className="z-50">
+						{file.name}
+					</TooltipContent>
+				</Tooltip>
 			</div>
 		</Block>
 	);

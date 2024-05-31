@@ -9,6 +9,7 @@ import { animate, getIndex, getPositionToIndexMapping } from "./utils";
 import { Stack } from "~/app/utils/styled";
 import useDraggable from "~/app/_hooks/useDraggable";
 import { SelectFile } from "~/server/db/schema";
+import { TooltipProvider } from "~/components/ui/tooltip";
 
 export interface IAppList {
 	file: SelectFile;
@@ -223,36 +224,38 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
 	return (
 		<Stack style={{ height: 400 }} className="h-full flex-col">
 			<AppWrapper ref={wrapperRef}>
-				{springs.map((props, i) => {
-					// @ts-ignore
-					const appCurrent = apps[i];
-					if (!appCurrent) {
-						return null;
-					}
-					const dragId = appCurrent.file.name;
-					return (
+				<TooltipProvider>
+					{springs.map((props, i) => {
 						// @ts-ignore
-						<AnimatedWrapper key={appCurrent.file.name} style={props}>
-							<AppBlock
-								{...handlers}
-								onMouseDown={(event) => {
-									draggingIndex.current = i;
-									handlers.onMouseDown(event, dragId);
-								}}
-								style={{
+						const appCurrent = apps[i];
+						if (!appCurrent) {
+							return null;
+						}
+						const dragId = appCurrent.file.name;
+						return (
+							// @ts-ignore
+							<AnimatedWrapper key={appCurrent.file.name} style={props}>
+								<AppBlock
+									{...handlers}
+									onMouseDown={(event) => {
+										draggingIndex.current = i;
+										handlers.onMouseDown(event, dragId);
+									}}
+									style={{
+										// @ts-ignore
+										width: 128 * appCurrent.width - 8,
+										height: 120,
+										// @ts-ignore
+										background: appCurrent.background
+									}}
 									// @ts-ignore
-									width: 128 * appCurrent.width - 8,
-									height: 120,
-									// @ts-ignore
-									background: appCurrent.background
-								}}
-								// @ts-ignore
-								index={i}
-								file={appCurrent.file}
-							/>
-						</AnimatedWrapper>
-					);
-				})}
+									index={i}
+									file={appCurrent.file}
+								/>
+							</AnimatedWrapper>
+						);
+					})}
+				</TooltipProvider>
 			</AppWrapper>
 		</Stack>
 	);
