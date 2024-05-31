@@ -6,12 +6,14 @@ import { useCallback, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
+import { Switch } from "~/components/ui/switch";
 import { getS3Client } from "~/lib/s3";
 import { api } from "~/trpc/react";
 
 export default function FileUploader() {
 	const router = useRouter();
 	const [files, setFiles] = useState<File[]>([]);
+	const [publicSwitch, setPublicSwitch] = useState(true);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const createFile = api.file.create.useMutation({
 		onSuccess: () => {
@@ -67,10 +69,11 @@ export default function FileUploader() {
 				console.log("================\n", "data: ", data, "\n================");
 				createFile.mutate({
 					name: file.name,
+					makePublic: publicSwitch,
 				})
 			});
 		}
-	}, [files, setUploadProgress]);
+	}, [files, setUploadProgress, publicSwitch]);
 
 	return (
 		<div className="border-2 rounded-lg p-5">
@@ -82,6 +85,10 @@ export default function FileUploader() {
 			))}
 			{files.length ?
 				<div>
+					<div className="flex items-center mt-3 space-x-2">
+						<Switch checked={publicSwitch} onCheckedChange={() => setPublicSwitch(e => !e)} id="airplane-mode" />
+						<Label htmlFor="airplane-mode">Public</Label>
+					</div>
 					<Button
 						onClick={() => uploadFiles()}
 						className="mt-3 mr-0 ml-auto block">Upload</Button>

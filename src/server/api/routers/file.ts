@@ -12,12 +12,12 @@ export const fileRouter = createTRPCRouter({
 	create: protectedProcedure
 		.input(z.object({
 			name: z.string().min(1),
-			public: z.boolean().default(true)
+			makePublic: z.boolean().default(true)
 		}))
 		.mutation(async ({ ctx, input }) => {
 			await ctx.db.insert(files).values({
 				name: input.name,
-				public: input.public,
+				public: input.makePublic,
 				createdById: ctx.session.user.id,
 			});
 		}),
