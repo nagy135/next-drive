@@ -1,0 +1,15 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:13.1
+    volumes:
+      - next-drive-postgres:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    command: ["postgres", "-c", "log_statement=all"]
+    env_file: ./.env.postgres
+
+
+volumes:
+  next-drive-postgres:
+    name: next-drive-postgres
