@@ -63,17 +63,19 @@ const AppBlock = ({ file, ...props }: IProps) => {
 			{...props}
 		>
 			<div
-				className="p-3 bg-white shadow-md overflow-hidden rounded-md flex-col w-[132px] items-center justify-center">
-				<div className="flex flex-between justify-between cursor-pointer">
+				className="flex flex-col p-3 bg-white h-full shadow-md overflow-hidden rounded-md flex-col w-[132px] items-center justify-center">
+				<div className="flex flex-between w-full justify-between cursor-pointer">
 					<div>
 						{file.public ? "" : "🔒"}
 					</div>
 					<div
 						onClick={() => fileDownload(file.name)}
-						className="border-2 rounded p-1 hover:bg-black hover:text-white">↓</div>
+						className="border-2 rounded px-1 hover:bg-black hover:text-white">↓</div>
 				</div>
-				<FileIcon extension={extension} {...defaultStyles[extension]} />
-				<span>
+				<div className="relative w-[50px]">
+					<FileIcon extension={extension} {...defaultStyles[extension]} />
+				</div>
+				<span className="text-xs">
 					{file.name}
 				</span>
 			</div>
