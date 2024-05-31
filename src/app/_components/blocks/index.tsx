@@ -8,9 +8,10 @@ import AppBlock from "./appBlock";
 import { animate, getIndex, getPositionToIndexMapping } from "./utils";
 import { Stack } from "~/app/utils/styled";
 import useDraggable from "~/app/_hooks/useDraggable";
+import { SelectFile } from "~/server/db/schema";
 
 export interface IAppList {
-	name: string;
+	file: SelectFile;
 	background: string;
 	width: number;
 	position: number;
@@ -45,15 +46,15 @@ interface IProps {
 	rowSize: number;
 	multiWidth: boolean;
 	totalBlocks: number;
-	filenames: string[];
+	files: SelectFile[];
 }
 
-const Blocks = ({ rowSize, multiWidth, totalBlocks, filenames }: IProps) => {
+const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
 	const getApps = React.useCallback(() => {
 		// @ts-ignore
 		const appsZ: IAppList[] = totalBlocks > 0 ?
-			filenames.map((name, i) => ({
-				name,
+			files.map((file, i) => ({
+				file: file,
 				width: Math.random() > 0.5 ? (multiWidth ? 2 : 1) : 1,
 				position: -1,
 				background: getColor(i)
@@ -228,10 +229,10 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, filenames }: IProps) => {
 					if (!appCurrent) {
 						return null;
 					}
-					const dragId = appCurrent.name;
+					const dragId = appCurrent.file.name;
 					return (
 						// @ts-ignore
-						<AnimatedWrapper key={appCurrent.name} style={props}>
+						<AnimatedWrapper key={appCurrent.file.name} style={props}>
 							<AppBlock
 								{...handlers}
 								onMouseDown={(event) => {
@@ -247,7 +248,7 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, filenames }: IProps) => {
 								}}
 								// @ts-ignore
 								index={i}
-								filename={appCurrent.name}
+								file={appCurrent.file}
 							/>
 						</AnimatedWrapper>
 					);

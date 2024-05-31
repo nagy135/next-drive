@@ -10,16 +10,22 @@ import { files } from "~/server/db/schema";
 
 export const fileRouter = createTRPCRouter({
 	create: protectedProcedure
-		.input(z.object({ name: z.string().min(1) }))
+		.input(z.object({
+			name: z.string().min(1),
+			public: z.boolean().default(true)
+		}))
 		.mutation(async ({ ctx, input }) => {
 			await ctx.db.insert(files).values({
 				name: input.name,
+				public: input.public,
 				createdById: ctx.session.user.id,
 			});
 		}),
 
 	getAll: publicProcedure.query(({ ctx }) => {
-		return ctx.db.query.files.findMany();
+		return ctx.db.query.files.findMany({
+			where: eq(files.public, true)
+		});
 	}),
 
 	getByUserId: publicProcedure

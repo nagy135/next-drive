@@ -10,7 +10,6 @@ export default async function Home() {
 	const files = userId === undefined
 		? await api.file.getAll()
 		: await api.file.getByUserId(userId);
-	console.log(userId);
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center ">
 			<div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
@@ -30,7 +29,7 @@ export default async function Home() {
 					: <FileUploader />
 				}
 				<h1 className="text-xl font-bold">{!session ? "Files of every user" : "Your files"}</h1>
-				<Grid filenames={files.map(e => e.name)} />
+				<Grid files={files} />
 			</div>
 		</main>
 	);

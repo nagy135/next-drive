@@ -4,17 +4,18 @@ import * as React from "react";
 
 import Blocks from "./blocks";
 import { useWindowSize } from "../_hooks/useWindowSize";
+import { SelectFile } from "~/server/db/schema";
 
 type GridProps = {
-	filenames: string[];
+	files: SelectFile[];
 };
 
-export default function Grid({ filenames }: GridProps) {
+export default function Grid({ files }: GridProps) {
 	const [totalBlocks, setTotalBlocks] = React.useState(0);
 	const size = useWindowSize();
 
 	React.useLayoutEffect(() => {
-		setTotalBlocks(filenames.length);
+		setTotalBlocks(files.length);
 	}, []);
 
 	const width = size[0] as number;
@@ -27,7 +28,7 @@ export default function Grid({ filenames }: GridProps) {
 				rowSize={rowSize}
 				multiWidth={false}
 				totalBlocks={totalBlocks}
-				filenames={filenames}
+				files={files}
 			/>
 		</div>
 	);

@@ -6,6 +6,7 @@ import { Stack } from "~/app/utils/styled";
 
 import { DefaultExtensionType, FileIcon, defaultStyles } from "react-file-icon";
 import { getS3Client } from "~/lib/s3";
+import { SelectFile } from "~/server/db/schema";
 
 
 const Block = styled(Stack)`
@@ -16,12 +17,12 @@ const Block = styled(Stack)`
 
 interface IProps {
 	style: React.CSSProperties;
-	filename: string;
+	file: SelectFile;
 	onMouseDown: (event: React.MouseEvent) => void;
 }
 
-const AppBlock = ({ filename, ...props }: IProps) => {
-	const extension = (filename.split('.').at(-1) ?? 'txt') as DefaultExtensionType;
+const AppBlock = ({ file, ...props }: IProps) => {
+	const extension = (file.name.split('.').at(-1) ?? 'txt') as DefaultExtensionType;
 
 	const fileDownload = (filename: string): void => {
 
@@ -63,14 +64,17 @@ const AppBlock = ({ filename, ...props }: IProps) => {
 		>
 			<div
 				className="p-3 bg-white shadow-md overflow-hidden rounded-md flex-col w-[132px] items-center justify-center">
-				<div className="text-right cursor-pointer">
-					<span
-						onClick={() => fileDownload(filename)}
-						className="border-2 rounded p-1 hover:bg-black hover:text-white">↓</span>
+				<div className="flex flex-between justify-between cursor-pointer">
+					<div>
+						{file.public ? "" : "🔒"}
+					</div>
+					<div
+						onClick={() => fileDownload(file.name)}
+						className="border-2 rounded p-1 hover:bg-black hover:text-white">↓</div>
 				</div>
 				<FileIcon extension={extension} {...defaultStyles[extension]} />
 				<span>
-					{filename}
+					{file.name}
 				</span>
 			</div>
 		</Block>

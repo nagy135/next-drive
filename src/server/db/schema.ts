@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+	boolean,
 	index,
 	integer,
 	pgTableCreator,
@@ -25,6 +26,8 @@ export const files = createTable(
 		id: serial("id").primaryKey(),
 		name: varchar("name", { length: 256 }).notNull(),
 
+		public: boolean("public").default(true).notNull(),
+
 		createdById: varchar("createdById", { length: 255 })
 			.notNull()
 			.references(() => users.id),
@@ -38,6 +41,8 @@ export const files = createTable(
 		nameIndex: index("name_idx").on(example.name),
 	})
 );
+
+export type SelectFile = typeof files.$inferSelect;
 
 export const users = createTable("user", {
 	id: varchar("id", { length: 255 }).notNull().primaryKey(),
