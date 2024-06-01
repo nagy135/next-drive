@@ -20,6 +20,7 @@ interface IProps {
 	style: React.CSSProperties;
 	file: SelectFile;
 	onMouseDown: (event: React.MouseEvent) => void;
+	onMouseUp: (event: React.MouseEvent) => void;
 }
 
 const AppBlock = ({ file, ...props }: IProps) => {

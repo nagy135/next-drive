@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import {
@@ -22,6 +22,28 @@ export const fileRouter = createTRPCRouter({
 			});
 		}),
 
+	update: protectedProcedure
+		.input(z.array(z.object({
+			id: z.number(),
+			order: z.number(),
+		})))
+		.mutation(async ({ ctx, input }) => {
+			await ctx.db.transaction(async (tx) => {
+				await Promise.all(
+					input.map(async (swap) =>
+						tx.update(files)
+							.set({
+								order: swap.order
+							})
+							.where(eq(files.id, swap.id))
+					)
+				)
+			});
+			return {
+				success: true
+			};
+		}),
+
 	getAll: publicProcedure.query(({ ctx }) => {
 		return ctx.db.query.files.findMany({
 			where: eq(files.public, true)
@@ -32,7 +54,8 @@ export const fileRouter = createTRPCRouter({
 		.input(z.string())
 		.query(({ ctx, input }) => {
 			return ctx.db.query.files.findMany({
-				where: eq(files.createdById, input)
+				where: eq(files.createdById, input),
+				orderBy: [asc(files.order)]
 			});
 		}),
 

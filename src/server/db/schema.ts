@@ -27,6 +27,7 @@ export const files = createTable(
 		name: varchar("name", { length: 256 }).notNull(),
 
 		public: boolean("public").default(true).notNull(),
+		order: serial("order").notNull(),
 
 		createdById: varchar("createdById", { length: 255 })
 			.notNull()

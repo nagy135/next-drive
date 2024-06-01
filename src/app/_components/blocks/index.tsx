@@ -10,6 +10,7 @@ import { Stack } from "~/app/utils/styled";
 import useDraggable from "~/app/_hooks/useDraggable";
 import { SelectFile } from "~/server/db/schema";
 import { TooltipProvider } from "~/components/ui/tooltip";
+import { api } from "~/trpc/react";
 
 export interface IAppList {
 	file: SelectFile;
@@ -51,6 +52,11 @@ interface IProps {
 }
 
 const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
+	const updateMutation = api.file.update.useMutation({
+		onSuccess: () => {
+			alert("swapped");
+		}
+	})
 	const getApps = React.useCallback(() => {
 		// @ts-ignore
 		const appsZ: IAppList[] = totalBlocks > 0 ?
@@ -213,6 +219,31 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
 		);
 		if (!store.dragging) {
 			clearStore();
+
+			let performSync = false;
+
+			for (let i = 0; i < newOrder.length; i++) {
+				const before = order.current[i];
+				const after = newOrder[i];
+				if (before && after) {
+					if (before.index !== after.index) {
+						performSync = true;
+						break;
+					}
+				}
+			}
+			if (performSync) {
+				console.log('performing sync')
+				updateMutation.mutate(newOrder.map((a) => {
+					const first = files[a.index] as SelectFile;
+					const second = files[a.position] as SelectFile;
+					return {
+						id: first.id,
+						order: second.order,
+					}
+				}));
+			}
+
 			order.current = newOrder;
 			positionToIndexMap.current = getPositionToIndexMapping(
 				order.current,
