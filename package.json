@@ -6,6 +6,7 @@
   "scripts": {
     "build": "next build --no-lint",
     "db:push": "drizzle-kit push",
+    "db:seed": "tsx ./seed.ts",
     "db:studio": "drizzle-kit studio",
     "dev": "next dev",
     "lint": "next lint",
@@ -53,6 +54,7 @@
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
+    "dotenv": "^16.4.5",
     "drizzle-kit": "^0.21.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.1.3",
