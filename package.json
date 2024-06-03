@@ -44,7 +44,6 @@
     "react-file-icon": "^1.4.0",
     "react-spring": "^9.7.3",
     "server-only": "^0.0.1",
-    "sharp": "^0.33.4",
     "styled-components": "^6.1.11",
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.3.0",
