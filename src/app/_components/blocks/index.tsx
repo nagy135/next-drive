@@ -15,7 +15,6 @@ import Spinner from "./spinner";
 
 export interface IAppList {
 	file: SelectFile;
-	background: string;
 	width: number;
 	position: number;
 }
@@ -33,17 +32,6 @@ const AppWrapper = styled(Stack)`
 	padding-top: 3em;
   position: relative;
 `;
-
-const getColor = (i: number) => {
-	const colors = [
-		"linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
-		"linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-		"linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)",
-		"linear-gradient(135deg, #c3cfe2 0%, #c3cfe2 100%)"
-	];
-
-	return colors[i % 4];
-};
 
 interface IProps {
 	rowSize: number;
@@ -69,7 +57,6 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
 				file: file,
 				width: Math.random() > 0.5 ? (multiWidth ? 2 : 1) : 1,
 				position: -1,
-				background: getColor(i)
 			}))
 			: [];
 
@@ -284,9 +271,9 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
 									style={{
 										// @ts-ignore
 										width: 128 * appCurrent.width - 8,
-										height: 120,
+										height: 140,
+										border: "1px solid #e5e7eb",
 										// @ts-ignore
-										background: appCurrent.background
 									}}
 									// @ts-ignore
 									index={i}

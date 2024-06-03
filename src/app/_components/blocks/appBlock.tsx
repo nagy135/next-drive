@@ -7,7 +7,8 @@ import { Stack } from "~/app/utils/styled";
 import { DefaultExtensionType, FileIcon, defaultStyles } from "react-file-icon";
 import { getS3Client } from "~/lib/s3";
 import { SelectFile } from "~/server/db/schema";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
+import Image from "next/image";
 
 
 const Block = styled(Stack)`
@@ -65,17 +66,20 @@ const AppBlock = ({ file, ...props }: IProps) => {
 			{...props}
 		>
 			<div
-				className="flex flex-col p-3 bg-white h-full shadow-md overflow-hidden rounded-md flex-col w-[132px] items-center justify-center">
+				className="flex flex-col py-3 px-1 bg-white h-full shadow-md overflow-hidden rounded-md flex-col w-[132px] items-center justify-center">
 				<div className="flex flex-between w-full justify-between cursor-pointer">
-					<div>
+					<div className="relative w-[20px]">
+						<FileIcon extension={extension} {...defaultStyles[extension]} />
+					</div>
+					<div className="p-1">
 						{file.public ? "" : "🔒"}
 					</div>
 					<div
 						onClick={() => fileDownload(file.name)}
 						className="border-2 rounded px-1 hover:bg-black hover:text-white">↓</div>
 				</div>
-				<div className="relative w-[50px]">
-					<FileIcon extension={extension} {...defaultStyles[extension]} />
+				<div>
+					<Image src={"https://nagy135-next-drive-bucket.s3.eu-north-1.amazonaws.com/resized/" + file.name} alt="lol" width={70} height={70} />
 				</div>
 				<Tooltip>
 					<TooltipTrigger asChild>

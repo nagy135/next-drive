@@ -1,5 +1,6 @@
 "use client";
 
+import { Upload } from '@aws-sdk/lib-storage';
 import { useCallback, useState } from "react";
 
 import { Button } from "~/components/ui/button";
@@ -7,6 +8,7 @@ import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
 import { Switch } from "~/components/ui/switch";
 import { getS3Client } from "~/lib/s3";
+import { scaleImageBeforeUpload } from "~/lib/image";
 import { api } from "~/trpc/react";
 
 export default function FileUploader() {
@@ -40,7 +42,7 @@ export default function FileUploader() {
 	const onDragOver = (ev: any) => ev.preventDefault();
 
 
-	const uploadFiles = useCallback(() => {
+	const uploadFiles = useCallback(async () => {
 
 		const s3 = getS3Client();
 
@@ -53,23 +55,42 @@ export default function FileUploader() {
 				ContentType: file.type,
 			};
 
-			var upload = s3
-				.putObject(params)
-				.on("httpUploadProgress", (evt) => {
-					const progress = Math.round((evt.loaded * 100) / evt.total);
-					setUploadProgress(progress);
-					// File uploading progress
-				})
-				.promise();
-
-			upload.then((data) => {
-				console.log("[INFO] uploaded successfuly: ", file);
-				console.log("================\n", "data: ", data, "\n================");
-				createFileMutation.mutate({
-					name: file.name,
-					makePublic: publicSwitch,
-				})
+			const upload = new Upload({
+				client: s3,
+				params
 			});
+
+			upload.on("httpUploadProgress", (progress) => {
+				setUploadProgress(Math.round((progress.loaded! * 100) / progress.total!));
+			});
+
+
+			await upload.done();
+			createFileMutation.mutate({
+				name: file.name,
+				makePublic: publicSwitch,
+			})
+			console.log("[INFO] uploaded successfuly: ", file);
+
+			const resized = await scaleImageBeforeUpload(file, { width: 100, height: 100 });
+			if (!resized) {
+				console.error("Failed to resize image");
+				return;
+			}
+			const resizedParams = {
+				Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? "",
+				Key: `resized/${file.name}`,
+				Body: resized,
+				ContentType: file.type,
+			};
+
+			const uploadResized = new Upload({
+				client: s3,
+				params: resizedParams
+			})
+
+			await uploadResized.done();
+			console.log("[INFO] resized uploaded successfuly: ", file);
 		}
 	}, [files, setUploadProgress, publicSwitch]);
 

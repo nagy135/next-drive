@@ -9,6 +9,16 @@ const config = {
 	typescript: {
 		ignoreBuildErrors: true,
 	},
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'nagy135-next-drive-bucket.s3.eu-north-1.amazonaws.com',
+				port: '',
+				pathname: '/**/*',
+			},
+		],
+	},
 };
 
 export default config;
