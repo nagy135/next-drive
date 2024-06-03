@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 import { Button } from "~/components/ui/button";
@@ -11,14 +10,13 @@ import { getS3Client } from "~/lib/s3";
 import { api } from "~/trpc/react";
 
 export default function FileUploader() {
-	const router = useRouter();
 	const [files, setFiles] = useState<File[]>([]);
 	const [publicSwitch, setPublicSwitch] = useState(true);
 	const [uploadProgress, setUploadProgress] = useState(0);
-	const createFile = api.file.create.useMutation({
+	const createFileMutation = api.file.create.useMutation({
 		onSuccess: () => {
 			setFiles([]);
-			router.refresh();
+			location.reload();
 		}
 	});
 
@@ -67,7 +65,7 @@ export default function FileUploader() {
 			upload.then((data) => {
 				console.log("[INFO] uploaded successfuly: ", file);
 				console.log("================\n", "data: ", data, "\n================");
-				createFile.mutate({
+				createFileMutation.mutate({
 					name: file.name,
 					makePublic: publicSwitch,
 				})
