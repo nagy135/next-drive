@@ -117,7 +117,7 @@ export default function FileUploader() {
 			<div style={{ marginTop: 20 }}></div>
 			<div className="flex flex-col" id="drop_zone" onDrop={onDropHandler} onDragOver={onDragOver}>
 				<div className="text-center">Drop file here or</div>
-				<Label className="border-2 rounded p-2 mt-3" htmlFor={"file_picker"}>Click to select file</Label>
+				<Button className="mt-3" variant="outline"><Label htmlFor={"file_picker"}>Click to select file</Label></Button>
 				<input
 					id="file_picker"
 					className="hidden"
