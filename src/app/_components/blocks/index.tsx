@@ -11,6 +11,7 @@ import useDraggable from "~/app/_hooks/useDraggable";
 import { SelectFile } from "~/server/db/schema";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { api } from "~/trpc/react";
+import Spinner from "./spinner";
 
 export interface IAppList {
 	file: SelectFile;
@@ -52,10 +53,14 @@ interface IProps {
 }
 
 const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
+	const [isSyncing, setIsSyncing] = React.useState(false);
 	const updateMutation = api.file.update.useMutation({
 		onSuccess: () => {
-			alert("swapped");
-		}
+			setIsSyncing(false);
+		},
+		onMutate: () => {
+			setIsSyncing(true);
+		},
 	})
 	const getApps = React.useCallback(() => {
 		// @ts-ignore
@@ -254,6 +259,10 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
 
 	return (
 		<Stack style={{ height: 400 }} className="h-full flex-col">
+			{isSyncing && <div className="fixed flex p-3 gap-2 items-center bottom-0 left-0 text-lg">
+				<Spinner />
+				<div>syncing...</div>
+			</div>}
 			<AppWrapper ref={wrapperRef}>
 				<TooltipProvider>
 					{springs.map((props, i) => {
