@@ -8,26 +8,10 @@ import { DefaultExtensionType, FileIcon, defaultStyles } from "react-file-icon";
 import { getS3Client } from "~/lib/s3";
 import { SelectFile } from "~/server/db/schema";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-import Image from "next/image";
 import { Button } from "~/components/ui/button";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { useState } from "react";
-
-const ImageWithHideOnError = (props: any) => {
-	const [hideImage, setHideImage] = useState(false);
-
-	return (
-		!hideImage && (
-			<Image
-				{...props}
-				onError={() => {
-					setHideImage(true);
-				}}
-			/>
-		)
-	);
-};
+import { ImageWithHideOnError } from "~/lib/tsx/utils";
 
 const Block = styled(Stack)`
   position: relative;
