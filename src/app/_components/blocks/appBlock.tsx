@@ -10,6 +10,7 @@ import { SelectFile } from "~/server/db/schema";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
 
 
 const Block = styled(Stack)`
@@ -28,7 +29,7 @@ interface IProps {
 const AppBlock = ({ file, ...props }: IProps) => {
 	const extension = (file.name.split('.').at(-1) ?? 'txt') as DefaultExtensionType;
 
-	const fileDownload = (filename: string): void => {
+	const fileDownload = async (filename: string) => {
 
 		const s3 = getS3Client();
 		try {
@@ -36,30 +37,26 @@ const AppBlock = ({ file, ...props }: IProps) => {
 				Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? "",
 				Key: filename
 			};
+			const response = await s3.send(new GetObjectCommand(params));
+			const data = await response.Body?.transformToByteArray();
 
-			s3.getObject(params, (_err, data) => {
-				if (data.Body) {
-					const blob = new Blob([data.Body as BlobPart], { type: data.ContentType });
+			const blob = new Blob([data as BlobPart], { type: response.ContentType });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
 
-					const url = URL.createObjectURL(blob);
-					const a = document.createElement('a');
-					a.href = url;
-					a.download = filename;
-					document.body.appendChild(a);
-					a.click();
+			// Cleanup
+			URL.revokeObjectURL(url);
+			document.body.removeChild(a);
 
-					// Cleanup
-					URL.revokeObjectURL(url);
-					document.body.removeChild(a);
-				} else {
-					console.error('No data.Body in the response');
-				}
-			});
 
 		} catch (error) {
 			console.error('Error downloading the file', error);
 		}
-	}
+	};
 
 	return (
 		<Block
