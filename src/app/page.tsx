@@ -2,14 +2,9 @@ import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";
 import Grid from "./_components/grid";
 import FileUploader from "./_components/file-uploader";
-import { api } from "~/trpc/server";
 
 export default async function Home() {
 	const session = await getServerAuthSession();
-	const userId = session?.user.id;
-	const files = userId === undefined
-		? await api.file.getAll()
-		: await api.file.getByUserId(userId);
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center ">
 			<div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
@@ -29,7 +24,7 @@ export default async function Home() {
 					: <FileUploader />
 				}
 				<h1 className="text-xl font-bold">{!session ? "Files of every user" : "Your files"}</h1>
-				<Grid files={files} />
+				<Grid />
 			</div>
 		</main>
 	);

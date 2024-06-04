@@ -51,8 +51,11 @@ export const fileRouter = createTRPCRouter({
 	}),
 
 	getByUserId: publicProcedure
-		.input(z.string())
+		.input(z.string().optional())
 		.query(({ ctx, input }) => {
+			if (!input) {
+				throw new Error("userId is required");
+			}
 			return ctx.db.query.files.findMany({
 				where: eq(files.createdById, input),
 				orderBy: [asc(files.order)]
