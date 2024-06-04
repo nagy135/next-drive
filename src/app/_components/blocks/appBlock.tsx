@@ -9,6 +9,7 @@ import { getS3Client } from "~/lib/s3";
 import { SelectFile } from "~/server/db/schema";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import Image from "next/image";
+import { Button } from "~/components/ui/button";
 
 
 const Block = styled(Stack)`
@@ -68,18 +69,20 @@ const AppBlock = ({ file, ...props }: IProps) => {
 			<div
 				className="flex flex-col py-3 px-1 bg-white h-full shadow-md overflow-hidden rounded-md flex-col w-[132px] items-center justify-center">
 				<div className="flex flex-between w-full justify-between cursor-pointer">
-					<div className="relative w-[20px]">
+					<div className="relative w-[30px]">
 						<FileIcon extension={extension} {...defaultStyles[extension]} />
 					</div>
-					<div className="p-1">
+					<div className="p-1 text-xl">
 						{file.public ? "" : "🔒"}
 					</div>
-					<div
+					<Button
 						onClick={() => fileDownload(file.name)}
-						className="border-2 rounded px-1 hover:bg-black hover:text-white">↓</div>
+						className="py-0 px-2 mb-1"
+						variant="outline">
+						↓</Button>
 				</div>
 				<div>
-					<Image src={"https://nagy135-next-drive-bucket.s3.eu-north-1.amazonaws.com/resized/" + file.name} alt="lol" width={70} height={70} />
+					<Image draggable={false} src={"https://nagy135-next-drive-bucket.s3.eu-north-1.amazonaws.com/resized/" + file.name} alt="lol" width={70} height={70} />
 				</div>
 				<Tooltip>
 					<TooltipTrigger asChild>
