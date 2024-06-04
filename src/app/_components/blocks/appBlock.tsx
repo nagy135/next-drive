@@ -24,6 +24,9 @@ interface IProps {
 	file: SelectFile;
 	onMouseDown: (event: React.MouseEvent) => void;
 	onMouseUp: (event: React.MouseEvent) => void;
+	onTouchMove: (event: React.TouchEvent) => void;
+	onTouchStart: (event: React.TouchEvent) => void;
+	onTouchEnd: (event: React.TouchEvent) => void;
 }
 
 const AppBlock = ({ file, ...props }: IProps) => {

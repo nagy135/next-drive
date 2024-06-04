@@ -264,6 +264,13 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
 							<AnimatedWrapper key={appCurrent.file.name} style={props}>
 								<AppBlock
 									{...handlers}
+									onTouchMove={(event) => {
+										handlers.onTouchMove(event);
+									}}
+									onTouchStart={(event) => {
+										draggingIndex.current = i;
+										handlers.onTouchStart(event, dragId);
+									}}
 									onMouseDown={(event) => {
 										draggingIndex.current = i;
 										handlers.onMouseDown(event, dragId);
@@ -273,6 +280,7 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
 										width: 128 * appCurrent.width - 8,
 										height: 140,
 										border: "1px solid #e5e7eb",
+										touchAction: 'none'
 										// @ts-ignore
 									}}
 									// @ts-ignore

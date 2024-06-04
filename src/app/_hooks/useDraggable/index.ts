@@ -154,6 +154,57 @@ const useDraggable = ({ wrapperRef, onDragStart, onDragEnd }: IProps) => {
 		[actions, onDragStart]
 	);
 
+	const onTouchMove = React.useCallback(
+		(event: React.TouchEvent) => {
+			if (
+				wrapperRef.current &&
+				!isInside(wrapperRef.current!, {
+					left: event.touches[0]!.clientX,
+					top: event.touches[0]!.clientY
+				})
+			) {
+				if (onDragEnd) {
+					onDragEnd(event as any);
+				}
+				stop();
+				return;
+			}
+			if (dragging.current) {
+				actions.move([dragging.current], {
+					x: event.touches[0]!.clientX,
+					y: event.touches[0]!.clientY
+				});
+			}
+		},
+		[actions, onDragEnd, wrapperRef, stop]
+	);
+
+	const onTouchEnd = React.useCallback(
+		(event: React.TouchEvent) => {
+			if (onDragEnd) {
+				onDragEnd(event as any);
+			}
+			if (dragging.current) {
+				actions.stop([dragging.current]);
+			}
+		},
+		[actions, onDragEnd]
+	);
+
+	const onTouchStart = React.useCallback(
+		(event: React.TouchEvent, id: string) => {
+			const coordinates = { x: event.touches[0]!.clientX, y: event.touches[0]!.clientY };
+			event.stopPropagation();
+			if (onDragStart) {
+				onDragStart(event as any);
+			}
+
+			dragging.current = id;
+			actions.start(id, coordinates, true);
+		},
+		[actions, onDragStart]
+	);
+
 	const clearStore = React.useCallback(() => {
 		actions.clear();
 		dragging.current = null;
@@ -161,7 +212,7 @@ const useDraggable = ({ wrapperRef, onDragStart, onDragEnd }: IProps) => {
 
 	return {
 		store,
-		handlers: { onMouseDown, onMouseMove, onMouseUp },
+		handlers: { onMouseDown, onMouseMove, onMouseUp, onTouchStart, onTouchMove, onTouchEnd },
 		clearStore
 	};
 };
