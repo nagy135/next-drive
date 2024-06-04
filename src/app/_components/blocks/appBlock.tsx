@@ -11,7 +11,23 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { useState } from "react";
 
+const ImageWithHideOnError = (props: any) => {
+	const [hideImage, setHideImage] = useState(false);
+
+	return (
+		!hideImage && (
+			<Image
+				{...props}
+				onError={() => {
+					setHideImage(true);
+				}}
+			/>
+		)
+	);
+};
 
 const Block = styled(Stack)`
   position: relative;
@@ -37,20 +53,13 @@ const AppBlock = ({ file, ...props }: IProps) => {
 				Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? "",
 				Key: filename
 			};
-			const response = await s3.send(new GetObjectCommand(params));
-			const data = await response.Body?.transformToByteArray();
+			const command = new GetObjectCommand(params);
 
-			const blob = new Blob([data as BlobPart], { type: response.ContentType });
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = filename;
-			document.body.appendChild(a);
-			a.click();
+			const signedUrl = await getSignedUrl(s3, command, {
+				expiresIn: 3600,
+			});
 
-			// Cleanup
-			URL.revokeObjectURL(url);
-			document.body.removeChild(a);
+			window.open(signedUrl, 'Download');
 
 
 		} catch (error) {
@@ -79,7 +88,7 @@ const AppBlock = ({ file, ...props }: IProps) => {
 						↓</Button>
 				</div>
 				<div>
-					<Image draggable={false} src={"https://nagy135-next-drive-bucket.s3.eu-north-1.amazonaws.com/resized/" + file.name} alt="lol" width={70} height={70} />
+					<ImageWithHideOnError draggable={false} src={"https://nagy135-next-drive-bucket.s3.eu-north-1.amazonaws.com/resized/" + file.name} alt="lol" width={70} height={70} />
 				</div>
 				<Tooltip>
 					<TooltipTrigger asChild>

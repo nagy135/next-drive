@@ -122,7 +122,6 @@ export default function FileUploader() {
 					id="file_picker"
 					className="hidden"
 					type="file"
-					accept="image/png, image/jpeg"
 					onChange={(ev) => {
 						const file = ev.target?.files?.[0];
 						if (!file) return

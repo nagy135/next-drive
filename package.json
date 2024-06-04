@@ -16,6 +16,7 @@
     "@auth/drizzle-adapter": "^0.7.0",
     "@aws-sdk/client-s3": "^3.588.0",
     "@aws-sdk/lib-storage": "^3.588.0",
+    "@aws-sdk/s3-request-presigner": "^3.588.0",
     "@aws-sdk/xhr-http-handler": "^3.577.0",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-label": "^2.0.2",
