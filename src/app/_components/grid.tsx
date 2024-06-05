@@ -42,15 +42,16 @@ function GridRefresh() {
 	const session = useSession();
 	const filesQuery = api.file.getAll.useQuery();
 	const filesByUserQuery = api.file.getByUserId.useQuery(session.data?.user.id);
-	const utils = api.useUtils();
-	React.useEffect(() => {
-		const intervalId = setInterval(utils.invalidate, 5000); // Fetch every 5 seconds
+	React.useLayoutEffect(() => {
+		const intervalId = setInterval(
+			session.data ?
+				filesByUserQuery.refetch : filesQuery.refetch,
+			5000
+		);
 
-		utils.invalidate();
-		console.log("refreshing");
+		return () => clearInterval(intervalId);
+	}, [session]);
 
-		return () => clearInterval(intervalId); // Cleanup on unmount
-	}, []);
 	if (session.data) {
 		if (filesByUserQuery.data) {
 			return <GridInner deletable={true} files={filesByUserQuery.data} />
