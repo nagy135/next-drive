@@ -23,6 +23,7 @@ const Block = styled(Stack)`
 interface IProps {
 	style: React.CSSProperties;
 	file: SelectFile;
+	deletable: boolean;
 	onMouseDown: (event: React.MouseEvent) => void;
 	onMouseUp: (event: React.MouseEvent) => void;
 	onTouchMove: (event: React.TouchEvent) => void;
@@ -30,7 +31,7 @@ interface IProps {
 	onTouchEnd: (event: React.TouchEvent) => void;
 }
 
-const AppBlock = ({ file, ...props }: IProps) => {
+const AppBlock = ({ file, deletable, ...props }: IProps) => {
 	const extension = (file.name.split('.').at(-1) ?? 'txt') as DefaultExtensionType;
 	const deleteMutation = api.file.delete.useMutation({
 	})
@@ -80,7 +81,7 @@ const AppBlock = ({ file, ...props }: IProps) => {
 			{...props}
 		>
 			<div
-				className="flex flex-col py-3 px-1 bg-white h-full shadow-md overflow-hidden rounded-md flex-col w-[132px] items-center justify-center">
+				className="flex flex-col gap-1 py-3 px-1 bg-white h-full shadow-md overflow-hidden rounded-md flex-col w-[132px] items-center justify-center">
 				<div className="flex flex-between w-full justify-between cursor-pointer">
 					<div className="relative w-[30px]">
 						<FileIcon extension={extension} {...defaultStyles[extension]} />
@@ -89,11 +90,11 @@ const AppBlock = ({ file, ...props }: IProps) => {
 						{file.public ? "" : "🔒"}
 					</div>
 					<div className="flex gap-1">
-						<Button
+						{deletable && <Button
 							onClick={() => fileDelete(file)}
 							className="py-0 px-2 mb-1 h-7"
 							variant="destructive">
-							x</Button>
+							x</Button>}
 						<Button
 							onClick={() => fileDownload(file.name)}
 							className="py-0 px-2 mb-1 h-7"

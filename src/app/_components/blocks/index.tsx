@@ -38,9 +38,10 @@ interface IProps {
 	multiWidth: boolean;
 	totalBlocks: number;
 	files: SelectFile[];
+	deletable: boolean;
 }
 
-const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
+const Blocks = ({ rowSize, multiWidth, totalBlocks, files, deletable }: IProps) => {
 	const [isSyncing, setIsSyncing] = React.useState(false);
 	const updateMutation = api.file.update.useMutation({
 		onSuccess: () => {
@@ -286,6 +287,7 @@ const Blocks = ({ rowSize, multiWidth, totalBlocks, files }: IProps) => {
 									// @ts-ignore
 									index={i}
 									file={appCurrent.file}
+									deletable={deletable}
 								/>
 							</AnimatedWrapper>
 						);

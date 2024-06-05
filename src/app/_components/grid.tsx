@@ -10,9 +10,10 @@ import { SessionProvider, useSession } from "next-auth/react"
 
 type GridProps = {
 	files: SelectFile[];
+	deletable: boolean;
 };
 
-function GridInner({ files }: GridProps) {
+function GridInner({ files, deletable }: GridProps) {
 	const [totalBlocks, setTotalBlocks] = React.useState(0);
 	const size = useWindowSize();
 
@@ -31,6 +32,7 @@ function GridInner({ files }: GridProps) {
 				multiWidth={false}
 				totalBlocks={totalBlocks}
 				files={files}
+				deletable={deletable}
 			/>
 		</div>
 	);
@@ -51,11 +53,11 @@ function GridRefresh() {
 	}, []);
 	if (session.data) {
 		if (filesByUserQuery.data) {
-			return <GridInner files={filesByUserQuery.data} />
+			return <GridInner deletable={true} files={filesByUserQuery.data} />
 		}
 	} else {
 		if (filesQuery.data) {
-			return <GridInner files={filesQuery.data} />
+			return <GridInner deletable={false} files={filesQuery.data} />
 		}
 	}
 }
