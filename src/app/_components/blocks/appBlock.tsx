@@ -9,9 +9,10 @@ import { getS3Client } from "~/lib/s3";
 import { SelectFile } from "~/server/db/schema";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { Button } from "~/components/ui/button";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { ImageWithHideOnError } from "~/lib/tsx/utils";
+import { api } from "~/trpc/react";
 
 const Block = styled(Stack)`
   position: relative;
@@ -31,6 +32,25 @@ interface IProps {
 
 const AppBlock = ({ file, ...props }: IProps) => {
 	const extension = (file.name.split('.').at(-1) ?? 'txt') as DefaultExtensionType;
+	const deleteMutation = api.file.delete.useMutation({
+	})
+
+	const fileDelete = async (file: SelectFile) => {
+		const s3 = getS3Client();
+		try {
+			const params = {
+				Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? "",
+				Key: file.name
+			};
+			const deleteCommand = new DeleteObjectCommand(params);
+			await s3.send(deleteCommand);
+			console.log(`File ${file.name} deleted successfully (in S3)`);
+			await deleteMutation.mutateAsync(file.id);
+			location.reload();
+		} catch (error) {
+			console.error('Error deleting the file', error);
+		}
+	};
 
 	const fileDownload = async (filename: string) => {
 
@@ -68,11 +88,18 @@ const AppBlock = ({ file, ...props }: IProps) => {
 					<div className="p-1 text-xl">
 						{file.public ? "" : "🔒"}
 					</div>
-					<Button
-						onClick={() => fileDownload(file.name)}
-						className="py-0 px-2 mb-1"
-						variant="outline">
-						↓</Button>
+					<div className="flex gap-1">
+						<Button
+							onClick={() => fileDelete(file)}
+							className="py-0 px-2 mb-1 h-7"
+							variant="destructive">
+							x</Button>
+						<Button
+							onClick={() => fileDownload(file.name)}
+							className="py-0 px-2 mb-1 h-7"
+							variant="outline">
+							↓</Button>
+					</div>
 				</div>
 				<div>
 					<ImageWithHideOnError draggable={false} src={"https://nagy135-next-drive-bucket.s3.eu-north-1.amazonaws.com/resized/" + file.name} alt="lol" width={70} height={70} />

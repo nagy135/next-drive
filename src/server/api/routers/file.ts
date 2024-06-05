@@ -44,6 +44,12 @@ export const fileRouter = createTRPCRouter({
 			};
 		}),
 
+	delete: protectedProcedure
+		.input(z.number())
+		.mutation(async ({ ctx, input }) => {
+			await ctx.db.delete(files).where(eq(files.id, input));
+		}),
+
 	getAll: publicProcedure.query(({ ctx }) => {
 		return ctx.db.query.files.findMany({
 			where: eq(files.public, true)
