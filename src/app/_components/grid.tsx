@@ -42,15 +42,6 @@ function GridRefresh() {
 	const session = useSession();
 	const filesQuery = api.file.getAll.useQuery();
 	const filesByUserQuery = api.file.getByUserId.useQuery(session.data?.user.id);
-	React.useLayoutEffect(() => {
-		const intervalId = setInterval(
-			session.data ?
-				filesByUserQuery.refetch : filesQuery.refetch,
-			5000
-		);
-
-		return () => clearInterval(intervalId);
-	}, [session]);
 
 	if (session.data) {
 		if (filesByUserQuery.data) {
